@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gladys Nkatha | M&E Professional</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<!-- GSAP + ScrollTrigger + TextPlugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+
+<style>
+  /* ─── RESET & BASE ─── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --hibiscus: #EA44D4;
+    --crimson:  #DD3027;
+    --plum:     #733D6F;
+    --violet:   #5848B3;
+    --dark:     #0D0B12;
+    --deep:     #13101C;
+    --surface:  #1A1525;
+    --card:     #201B2E;
+    --text:     #F0EBF8;
+    --muted:    #9B92B0;
+    --border:   rgba(234,68,212,0.18);
+    --ff-head:  'Montserrat', sans-serif;
+    --ff-body:  'Inter', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: var(--ff-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  .cursor {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    pointer-events: none; mix-blend-mode: difference;
+  }
+  .cursor-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #fff; position: absolute;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.6);
+    position: absolute; transform: translate(-50%,-50%);
+    transition: transform 0.15s ease, width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:hover .cursor-ring { border-color: var(--hibiscus); }
+
+  /* ─── PARTICLE CANVAS ─── */
+  #particle-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; opacity: 0.55;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 5vw;
+    backdrop-filter: blur(20px);
+    background: rgba(13,11,18,0.75);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.4s;
+  }
+  .nav-logo {
+    font-family: var(--ff-head);
+    font-weight: 900; font-size: 1.15rem;
+    background: linear-gradient(135deg, var(--hibiscus), var(--violet));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 0.04em;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    position: relative; padding-bottom: 4px;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 1.5px;
+    background: linear-gradient(90deg, var(--hibiscus), var(--violet));
+    transition: width 0.35s ease;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ─── SECTIONS ─── */
+  section { position: relative; z-index: 1; }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 10rem 5vw 6rem;
+    overflow: hidden;
+  }
+  .hero-inner { max-width: 900px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--hibiscus);
+    margin-bottom: 1.5rem; opacity: 0;
+  }
+  .hero-eyebrow span.line {
+    display: block; width: 32px; height: 1.5px;
+    background: var(--hibiscus);
+  }
+  .hero-name {
+    font-family: var(--ff-head);
+    font-weight: 900; font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1.0; letter-spacing: -0.02em;
+    margin-bottom: 1rem; opacity: 0;
+  }
+  .hero-name .accent {
+    background: linear-gradient(135deg, var(--hibiscus) 0%, var(--crimson) 40%, var(--violet) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-typed-wrap {
+    font-family: var(--ff-head);
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    font-weight: 600; color: var(--muted);
+    margin-bottom: 1.8rem; min-height: 2.4em; opacity: 0;
+  }
+  .typed-cursor {
+    display: inline-block;
+    width: 2px; height: 1.2em;
+    background: var(--hibiscus);
+    margin-left: 3px;
+    vertical-align: text-bottom;
+    animation: blink 0.75s steps(1) infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .hero-tagline {
+    max-width: 600px; color: var(--muted);
+    font-size: 1rem; line-height: 1.8;
+    margin-bottom: 2.8rem; opacity: 0;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 2rem; border-radius: 4px;
+    font-family: var(--ff-body); font-size: 0.85rem;
+    font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; cursor: pointer; transition: all 0.3s;
+    border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--hibiscus), var(--crimson));
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(234,68,212,0.35);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(234,68,212,0.5);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover {
+    border-color: var(--hibiscus);
+    color: var(--hibiscus);
+    transform: translateY(-2px);
+  }
+
+  /* hero gradient orb */
+  .hero-orb {
+    position: absolute; right: -10%; top: 10%;
+    width: clamp(400px, 55vw, 820px);
+    height: clamp(400px, 55vw, 820px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(234,68,212,0.12) 0%, rgba(88,72,179,0.08) 50%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  /* ─── ABOUT ─── */
+  #about {
+    padding: 8rem 5vw;
+    background: var(--deep);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 5rem; align-items: start;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .about-photo-wrap {
+    position: relative;
+  }
+  .about-photo-frame {
+    position: relative;
+    width: 100%; aspect-ratio: 3/4;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .about-photo-frame img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(20%) contrast(1.05);
+    transition: filter 0.5s;
+  }
+  .about-photo-frame:hover img { filter: grayscale(0%) contrast(1); }
+  .about-photo-frame::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(160deg, rgba(234,68,212,0.15), transparent 60%);
+  }
+  .about-photo-border {
+    position: absolute; inset: -8px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .about-photo-badge {
+    position: absolute; bottom: -1.5rem; right: -1.5rem; z-index: 2;
+    background: linear-gradient(135deg, var(--hibiscus), var(--violet));
+    color: #fff; padding: 1rem 1.25rem;
+    font-family: var(--ff-head); font-weight: 700;
+    font-size: 0.78rem; text-align: center;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .about-photo-badge span { display: block; font-size: 1.6rem; font-weight: 900; }
+
+  .section-label {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--hibiscus);
+    margin-bottom: 1rem;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 24px; height: 1.5px;
+    background: var(--hibiscus);
+  }
+  .section-title {
+    font-family: var(--ff-head);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; line-height: 1.15;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .about-text p { color: var(--muted); margin-bottom: 1rem; font-size: 0.97rem; }
+  .about-text p strong { color: var(--text); }
+
+  .skills-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;
+    margin-top: 2rem;
+  }
+  .skill-tag {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.55rem 0.8rem;
+    font-size: 0.78rem; color: var(--muted);
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.25s;
+  }
+  .skill-tag::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--hibiscus); flex-shrink: 0;
+  }
+  .skill-tag:hover { border-color: var(--hibiscus); color: var(--text); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0;
+  }
+
+  /* ─── EXPERIENCE ─── */
+  #experience { padding: 8rem 5vw; }
+  .experience-inner { max-width: 1100px; margin: 0 auto; }
+  .section-head { text-align: center; margin-bottom: 5rem; }
+
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--border) 10%, var(--border) 90%, transparent);
+    transform: translateX(-50%);
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0; margin-bottom: 4rem; align-items: start;
+  }
+  .tl-item:nth-child(odd) .tl-card { grid-column: 1; grid-row: 1; }
+  .tl-item:nth-child(odd) .tl-dot  { grid-column: 2; grid-row: 1; }
+  .tl-item:nth-child(odd) .tl-date { grid-column: 3; grid-row: 1; padding-left: 2rem; padding-top: 1.5rem; }
+  .tl-item:nth-child(even) .tl-card { grid-column: 3; grid-row: 1; }
+  .tl-item:nth-child(even) .tl-dot  { grid-column: 2; grid-row: 1; }
+  .tl-item:nth-child(even) .tl-date { grid-column: 1; grid-row: 1; text-align: right; padding-right: 2rem; padding-top: 1.5rem; }
+
+  .tl-dot {
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 1.5rem;
+  }
+  .tl-dot-inner {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--hibiscus), var(--violet));
+    box-shadow: 0 0 0 4px rgba(234,68,212,0.15), 0 0 20px rgba(234,68,212,0.3);
+    flex-shrink: 0;
+  }
+
+  .tl-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 1.8rem;
+    transition: all 0.35s;
+    position: relative; overflow: hidden;
+  }
+  .tl-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--hibiscus), var(--crimson), var(--violet));
+    opacity: 0; transition: opacity 0.35s;
+  }
+  .tl-card:hover { border-color: rgba(234,68,212,0.4); transform: translateY(-3px); }
+  .tl-card:hover::before { opacity: 1; }
+
+  .tl-org {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--hibiscus);
+    margin-bottom: 0.4rem;
+  }
+  .tl-role {
+    font-family: var(--ff-head); font-weight: 700;
+    font-size: 1.05rem; color: var(--text); margin-bottom: 0.8rem;
+  }
+  .tl-bullets { list-style: none; }
+  .tl-bullets li {
+    font-size: 0.85rem; color: var(--muted); padding: 0.2rem 0 0.2rem 1rem;
+    position: relative;
+  }
+  .tl-bullets li::before {
+    content: ''; position: absolute; left: 0; top: 0.65rem;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--crimson);
+  }
+
+  .tl-date {
+    font-family: var(--ff-head); font-weight: 600;
+    font-size: 0.8rem; color: var(--plum); letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ─── EDUCATION ─── */
+  #education { padding: 8rem 5vw; background: var(--deep); }
+  .edu-inner { max-width: 1100px; margin: 0 auto; }
+
+  .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .edu-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1.8rem;
+    transition: all 0.35s; position: relative; overflow: hidden;
+  }
+  .edu-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--hibiscus), var(--violet));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.35s;
+  }
+  .edu-card:hover { transform: translateY(-4px); border-color: rgba(234,68,212,0.35); }
+  .edu-card:hover::after { transform: scaleX(1); }
+
+  .edu-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: linear-gradient(135deg, rgba(234,68,212,0.15), rgba(88,72,179,0.15));
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem; font-size: 1.1rem;
+  }
+  .edu-degree {
+    font-family: var(--ff-head); font-weight: 700;
+    font-size: 0.95rem; color: var(--text); margin-bottom: 0.3rem;
+  }
+  .edu-school { font-size: 0.82rem; color: var(--hibiscus); font-weight: 600; margin-bottom: 0.3rem; }
+  .edu-year { font-size: 0.75rem; color: var(--muted); }
+
+  /* ─── VISION ─── */
+  #vision { padding: 8rem 5vw; }
+  .vision-inner { max-width: 900px; margin: 0 auto; }
+  .vision-quote {
+    position: relative;
+    padding: 3rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 3rem;
+    overflow: hidden;
+  }
+  .vision-quote::before {
+    content: '"';
+    position: absolute; top: -0.5rem; left: 1.5rem;
+    font-family: var(--ff-head); font-size: 10rem;
+    font-weight: 900; line-height: 1;
+    background: linear-gradient(135deg, var(--hibiscus), var(--violet));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    opacity: 0.12; pointer-events: none;
+  }
+  .vision-quote p {
+    font-family: var(--ff-head); font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+    font-weight: 600; line-height: 1.65; color: var(--text);
+    position: relative; z-index: 1;
+  }
+  .vision-quote p em { color: var(--hibiscus); font-style: normal; }
+
+  .vision-pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+  .pillar {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1.5rem;
+    text-align: center; transition: all 0.35s;
+  }
+  .pillar:hover { border-color: var(--hibiscus); transform: translateY(-3px); }
+  .pillar-icon { font-size: 1.8rem; margin-bottom: 0.7rem; }
+  .pillar-title {
+    font-family: var(--ff-head); font-weight: 700;
+    font-size: 0.88rem; color: var(--text); margin-bottom: 0.5rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .pillar-desc { font-size: 0.8rem; color: var(--muted); }
+
+  /* ─── CONTACT ─── */
+  #contact { padding: 8rem 5vw; background: var(--deep); }
+  .contact-inner { max-width: 900px; margin: 0 auto; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+
+  .contact-info p { color: var(--muted); font-size: 0.93rem; line-height: 1.8; margin-bottom: 2rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 0.8rem; }
+  .contact-link {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 0.88rem; transition: color 0.3s;
+    padding: 0.6rem 0; border-bottom: 1px solid var(--border);
+  }
+  .contact-link:hover { color: var(--hibiscus); }
+  .contact-link-icon {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: var(--card); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .contact-link:hover .contact-link-icon {
+    background: linear-gradient(135deg, var(--hibiscus), var(--violet));
+    border-color: transparent;
+  }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .form-input, .form-textarea {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.85rem 1rem;
+    color: var(--text); font-family: var(--ff-body); font-size: 0.9rem;
+    outline: none; transition: border-color 0.3s;
+    width: 100%;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--hibiscus); }
+  .form-textarea { min-height: 130px; resize: vertical; }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(155,146,176,0.45); }
+
+  .form-submit {
+    background: linear-gradient(135deg, var(--hibiscus), var(--crimson));
+    color: #fff; border: none; border-radius: 4px;
+    padding: 0.95rem; cursor: pointer;
+    font-family: var(--ff-body); font-size: 0.85rem;
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(234,68,212,0.3);
+  }
+  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(234,68,212,0.45); }
+  .form-message { font-size: 0.85rem; padding: 0.8rem 1rem; border-radius: 4px; display: none; }
+  .form-message.success { background: rgba(68,212,100,0.12); color: #4ed880; border: 1px solid rgba(68,212,100,0.25); display: block; }
+  .form-message.error   { background: rgba(221,48,39,0.12); color: #f26b65; border: 1px solid rgba(221,48,39,0.25); display: block; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center; padding: 2.5rem 5vw;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted);
+  }
+  footer a { color: var(--hibiscus); text-decoration: none; }
+
+  /* ─── SCROLL REVEAL (initial state) ─── */
+  .sr { opacity: 0; transform: translateY(40px); }
+
+  /* ─── SCROLL PROGRESS ─── */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; z-index: 200;
+    height: 2px; width: 0%;
+    background: linear-gradient(90deg, var(--hibiscus), var(--crimson), var(--violet));
+    transition: width 0.1s;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-photo-wrap { max-width: 320px; margin: 0 auto; }
+    .about-photo-badge { bottom: -1rem; right: -0.5rem; }
+    .timeline::before { left: 20px; }
+    .tl-item {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: auto auto;
+    }
+    .tl-item:nth-child(odd) .tl-card,
+    .tl-item:nth-child(even) .tl-card { grid-column: 2; grid-row: 1; }
+    .tl-item:nth-child(odd) .tl-dot,
+    .tl-item:nth-child(even) .tl-dot { grid-column: 1; grid-row: 1; }
+    .tl-item:nth-child(odd) .tl-date,
+    .tl-item:nth-child(even) .tl-date { grid-column: 2; grid-row: 2; text-align: left; padding: 0.5rem 0 0 0; }
+    .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .hero-ctas { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor">
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+</div>
+
+<!-- Particle Canvas -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="nav-logo">Gladys Nkatha</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="line"></span> M&E Professional · Nairobi, Kenya</div>
+    <h1 class="hero-name">
+      Gladys<br><span class="accent">Nkatha.</span>
+    </h1>
+    <div class="hero-typed-wrap">
+      <span id="typed-text"></span><span class="typed-cursor"></span>
+    </div>
+    <p class="hero-tagline">
+      Passionate about strengthening how data is used to inform decision-making and drive meaningful,
+      community-level impact — especially in livelihoods, gender equality, women empowerment, and climate resilience.
+    </p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-primary">Get In Touch</a>
+      <a href="https://www.linkedin.com/in/gladys-nkatha/" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn Profile</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-photo-wrap sr">
+      <div class="about-photo-frame">
+        <!-- Profile image from GitHub -->
+        <img
+          src="https://raw.githubusercontent.com/GladysNkatha/GladysNkatha/main/profile.jpg"
+          alt="Gladys Nkatha"
+          onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/GladysNkatha/GladysNkatha/main/profile.jpeg'; this.onerror=function(){this.style.display='none'; this.parentElement.style.background='linear-gradient(160deg,#733D6F,#5848B3)';}"
+        />
+      </div>
+      <div class="about-photo-border"></div>
+      <div class="about-photo-badge"><span>3+</span>Years<br>Experience</div>
+    </div>
+
+    <div class="about-text sr">
+      <div class="section-label">About Me</div>
+      <h2 class="section-title">Turning data into<br>decisions that matter.</h2>
+      <p>
+        I'm a <strong>Monitoring & Evaluation professional</strong> with a Diploma in Monitoring & Evaluation
+        from Daystar University and a Certificate in Data Science & AI. My work sits at the intersection
+        of rigorous evidence generation and the real-world impact it can unlock for communities.
+      </p>
+      <p>
+        With experience in client-facing environments and executive support, I bring a sharp combination of
+        <strong>analytical depth, strong communication, and people-centred thinking</strong>. I have
+        hands-on knowledge of M&E methodologies, evaluation planning and reporting, programme monitoring
+        tool development, and data analysis using tools like Excel, SPSS, and STATA.
+      </p>
+      <p>
+        I am FAO-certified in <strong>Resilience Index Measurement & Analysis (RIMA)</strong> and
+        UN Women–certified in <strong>Results-Based Management (RBM)</strong> — credentials that
+        sharpen my ability to measure what truly counts.
+      </p>
+
+      <div class="skills-grid">
+        <div class="skill-tag">M&E Frameworks & Methodologies</div>
+        <div class="skill-tag">Impact Evaluation Design</div>
+        <div class="skill-tag">Programme Monitoring Tools</div>
+        <div class="skill-tag">Data Collection & Field Work</div>
+        <div class="skill-tag">SPSS / STATA / Excel</div>
+        <div class="skill-tag">Evaluation Report Writing</div>
+        <div class="skill-tag">Stakeholder Engagement</div>
+        <div class="skill-tag">ToR & Evaluation Protocol Design</div>
+        <div class="skill-tag">Results-Based Management</div>
+        <div class="skill-tag">RIMA · RBM Certified</div>
+        <div class="skill-tag">Data Science & AI (Certificate)</div>
+        <div class="skill-tag">Database & Information Mgmt</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── EXPERIENCE ─── -->
+<section id="experience">
+  <div class="experience-inner">
+    <div class="section-head sr">
+      <div class="section-label" style="justify-content:center;">Professional Experience</div>
+      <h2 class="section-title">Where I've Made an Impact</h2>
+    </div>
+
+    <div class="timeline">
+
+      <!-- Item 1 -->
+      <div class="tl-item">
+        <div class="tl-card sr">
+          <div class="tl-org">BrandHub Marketing Limited · South Sudan</div>
+          <div class="tl-role">Client Experience Associate</div>
+          <ul class="tl-bullets">
+            <li>Served as the primary point of contact for clients, visitors and partners, upholding brand standards.</li>
+            <li>Managed front-office operations including call and email handling, inquiry resolution, and scheduling.</li>
+            <li>Coordinated internal cross-team meetings to ensure smooth client engagement workflows.</li>
+            <li>Contributed directly to positive client experiences and long-term brand perception in a competitive market.</li>
+          </ul>
+        </div>
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-date">Post-High School<br>South Sudan</div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="tl-item">
+        <div class="tl-date">Executive Support<br>South Sudan</div>
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-card sr">
+          <div class="tl-org">BrandHub Marketing Limited · Office of the CEO</div>
+          <div class="tl-role">Executive Support Officer</div>
+          <ul class="tl-bullets">
+            <li>Supported the CEO with scheduling, correspondence management, and strategic meeting coordination.</li>
+            <li>Prepared briefing documents, reports, and internal presentations for senior leadership use.</li>
+            <li>Maintained high confidentiality standards while working directly with executive decision-makers.</li>
+            <li>Streamlined administrative processes, improving turnaround times on executive deliverables.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Item 3 – Academic Research -->
+      <div class="tl-item">
+        <div class="tl-card sr">
+          <div class="tl-org">CORAT Africa / Daystar University · Academic Research</div>
+          <div class="tl-role">Lead Researcher — Climate Change & Agricultural Productivity</div>
+          <ul class="tl-bullets">
+            <li>Conducted original research on climate variability and its impact on crop productivity in Kapoeta East County, South Sudan.</li>
+            <li>Led the full research cycle: design, data collection, field work, analysis, and report writing.</li>
+            <li>Research was formally published as part of academic requirements — demonstrating end-to-end M&E and evaluation competency.</li>
+            <li>Applied quantitative and qualitative data analysis methods to draw actionable insights for local agricultural stakeholders.</li>
+          </ul>
+        </div>
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-date">2022 – 2025<br>Kenya / South Sudan</div>
+      </div>
+
+      <!-- Item 4 – Group Project Coordinator -->
+      <div class="tl-item">
+        <div class="tl-date">2022 – 2025<br>Daystar University</div>
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-card sr">
+          <div class="tl-org">Daystar University · Leadership</div>
+          <div class="tl-role">Group Project Coordinator</div>
+          <ul class="tl-bullets">
+            <li>Coordinated multi-member research groups, delegating tasks and tracking deliverable timelines.</li>
+            <li>Led documentation, data presentation, and stakeholder communication for all group outputs.</li>
+            <li>Translated complex research findings into clear, digestible presentations for academic audiences.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── EDUCATION ─── -->
+<section id="education">
+  <div class="edu-inner">
+    <div class="section-head sr">
+      <div class="section-label" style="justify-content:center;">Education & Certifications</div>
+      <h2 class="section-title">Built for Evidence-Based Practice</h2>
+    </div>
+
+    <div class="edu-grid">
+      <div class="edu-card sr">
+        <div class="edu-icon">🎓</div>
+        <div class="edu-degree">Diploma in Monitoring & Evaluation</div>
+        <div class="edu-school">Daystar University, Kenya</div>
+        <div class="edu-year">Jan 2022 – Nov 2025 · Graduated</div>
+      </div>
+      <div class="edu-card sr">
+        <div class="edu-icon">🤖</div>
+        <div class="edu-degree">Certificate in Data Science & Artificial Intelligence</div>
+        <div class="edu-school">The Open University of Kenya</div>
+        <div class="edu-year">December 2025</div>
+      </div>
+      <div class="edu-card sr">
+        <div class="edu-icon">🌱</div>
+        <div class="edu-degree">Certificate in RIMA (Resilience Index Measurement & Analysis)</div>
+        <div class="edu-school">FAO Learning Academy, Rome</div>
+        <div class="edu-year">February 2026</div>
+      </div>
+      <div class="edu-card sr">
+        <div class="edu-icon">🏛️</div>
+        <div class="edu-degree">Certificate in Results-Based Management (RBM)</div>
+        <div class="edu-school">UN Women</div>
+        <div class="edu-year">March 2026</div>
+      </div>
+      <div class="edu-card sr">
+        <div class="edu-icon">📋</div>
+        <div class="edu-degree">SSCSE Secondary Certificate</div>
+        <div class="edu-school">Chinese Friendship Secondary School, South Sudan</div>
+        <div class="edu-year">Jan 2021 – May 2022</div>
+      </div>
+      <div class="edu-card sr">
+        <div class="edu-icon">🌍</div>
+        <div class="edu-degree">IGCSE Secondary Education</div>
+        <div class="edu-school">Brookhurst International School & Coast Academy, Kenya</div>
+        <div class="edu-year">2019 – 2020</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── VISION ─── -->
+<section id="vision">
+  <div class="vision-inner">
+    <div class="section-head sr">
+      <div class="section-label" style="justify-content:center;">Vision</div>
+      <h2 class="section-title">What Drives My Work</h2>
+    </div>
+
+    <div class="vision-quote sr">
+      <p>
+        My vision is a world where <em>every development programme is guided by rigorous evidence</em> and
+        every community's voice is reflected in the data that shapes policies. I am passionate about
+        strengthening how data is used to <em>inform decision-making and drive meaningful impact</em> —
+        especially in <em>livelihoods, gender equality, women empowerment, and climate resilience</em>.
+      </p>
+    </div>
+
+    <div class="vision-pillars sr">
+      <div class="pillar">
+        <div class="pillar-icon">📊</div>
+        <div class="pillar-title">Data-Driven Decisions</div>
+        <div class="pillar-desc">Bridging the gap between raw data and the strategic decisions that shape programmes.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">♀️</div>
+        <div class="pillar-title">Gender Equality</div>
+        <div class="pillar-desc">Designing M&E frameworks that centre women's experiences and measure empowerment meaningfully.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🌿</div>
+        <div class="pillar-title">Climate Resilience</div>
+        <div class="pillar-desc">Measuring adaptive capacity and long-term resilience in climate-affected communities.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🤝</div>
+        <div class="pillar-title">Community Impact</div>
+        <div class="pillar-desc">Ensuring programme outcomes translate into tangible, felt change at the grassroots level.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-head sr">
+      <div class="section-label" style="justify-content:center;">Contact</div>
+      <h2 class="section-title">Let's Connect</h2>
+    </div>
+
+    <div class="contact-grid">
+      <div class="sr">
+        <p>
+          Open to opportunities in Monitoring & Evaluation, programme coordination, and impact research —
+          particularly with UN agencies, INGOs, and development-focused organisations. I'd love to hear from you.
+        </p>
+        <div class="contact-links">
+          <a href="mailto:khamisgladys@gmail.com" class="contact-link">
+            <div class="contact-link-icon">✉️</div>
+            khamisgladys@gmail.com
+          </a>
+          <a href="tel:+254713168067" class="contact-link">
+            <div class="contact-link-icon">📞</div>
+            +254 713 168 067
+          </a>
+          <a href="https://www.linkedin.com/in/gladys-nkatha/" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">💼</div>
+            linkedin.com/in/gladys-nkatha
+          </a>
+          <a href="https://github.com/GladysNkatha" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">🐙</div>
+            github.com/GladysNkatha
+          </a>
+          <a href="#" class="contact-link">
+            <div class="contact-link-icon">📍</div>
+            Nairobi, Kenya
+          </a>
+        </div>
+      </div>
+
+      <div class="sr">
+        <form class="contact-form" id="contactForm">
+          <!-- web3forms access key — replace with real key -->
+          <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY" />
+          <input type="hidden" name="subject" value="Portfolio Contact — Gladys Nkatha" />
+          <input type="checkbox" name="botcheck" style="display:none;" />
+
+          <div class="form-group">
+            <label class="form-label" for="name">Your Name</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="Jane Doe" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="jane@organisation.org" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="subject">Subject</label>
+            <input class="form-input" type="text" id="subject" name="subject_line" placeholder="Collaboration / Opportunity / Hello" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message">Message</label>
+            <textarea class="form-textarea" id="message" name="message" placeholder="Tell me about the opportunity or project…" required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Send Message →</button>
+          <div class="form-message" id="formMessage"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Gladys Nkatha Khamis · Designed with intention · <a href="https://www.linkedin.com/in/gladys-nkatha/" target="_blank">LinkedIn</a></p>
+</footer>
+
+
+<script>
+/* ─── PARTICLE SYSTEM ─── */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], mouse = { x: -1000, y: -1000 };
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', () => { resize(); initParticles(); });
+resize();
+
+const COLORS = ['#EA44D4','#DD3027','#733D6F','#5848B3'];
+function randomColor() { return COLORS[Math.floor(Math.random() * COLORS.length)]; }
+
+function initParticles() {
+  particles = [];
+  const count = Math.min(Math.floor(W * H / 9000), 140);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 2 + 0.8,
+      color: randomColor(),
+      alpha: Math.random() * 0.5 + 0.15,
+    });
+  }
+}
+initParticles();
+
+window.addEventListener('mousemove', e => {
+  mouse.x = e.clientX; mouse.y = e.clientY;
+});
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  for (let p of particles) {
+    const dx = mouse.x - p.x, dy = mouse.y - p.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 120) {
+      p.vx -= (dx / dist) * 0.04;
+      p.vy -= (dy / dist) * 0.04;
+    }
+    p.vx *= 0.995; p.vy *= 0.995;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+    // Draw connections
+    for (let q of particles) {
+      const ex = p.x - q.x, ey = p.y - q.y;
+      const ed = Math.sqrt(ex*ex + ey*ey);
+      if (ed < 110) {
+        ctx.beginPath();
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = (1 - ed / 110) * 0.08;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = p.alpha;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ─── CUSTOM CURSOR ─── */
+const cursorDot  = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  cursorDot.style.transform  = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+  cursorRing.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+document.querySelectorAll('a, button, .btn, .skill-tag, .pillar, .tl-card, .edu-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursorRing.style.width = '56px'; cursorRing.style.height = '56px';
+    cursorRing.style.borderColor = '#EA44D4';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursorRing.style.width = '36px'; cursorRing.style.height = '36px';
+  });
+});
+
+/* ─── GSAP SETUP ─── */
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+// Hero entrance
+const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+tl.to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8 }, 0.3)
+  .to('.hero-name',    { opacity: 1, y: 0, duration: 1 },   0.55)
+  .to('.hero-typed-wrap', { opacity: 1, duration: 0.5 },    0.9)
+  .to('.hero-tagline', { opacity: 1, y: 0, duration: 0.8 }, 1.0)
+  .to('.hero-ctas',    { opacity: 1, y: 0, duration: 0.7 }, 1.2);
+
+// Typed headline loop
+const phrases = [
+  'Monitoring & Evaluation Officer',
+  'Data-Driven Programme Analyst',
+  'Impact Evaluation Specialist',
+  'RBM & RIMA Certified Professional',
+  'Community Development Advocate',
+];
+let phraseIdx = 0;
+const typedEl = document.getElementById('typed-text');
+function typePhrase(phrase, i = 0) {
+  if (i <= phrase.length) {
+    typedEl.textContent = phrase.slice(0, i);
+    setTimeout(() => typePhrase(phrase, i + 1), 50);
+  } else {
+    setTimeout(() => erasePhrase(phrase, phrase.length), 2000);
+  }
+}
+function erasePhrase(phrase, i) {
+  if (i >= 0) {
+    typedEl.textContent = phrase.slice(0, i);
+    setTimeout(() => erasePhrase(phrase, i - 1), 28);
+  } else {
+    phraseIdx = (phraseIdx + 1) % phrases.length;
+    setTimeout(() => typePhrase(phrases[phraseIdx]), 400);
+  }
+}
+setTimeout(() => typePhrase(phrases[0]), 1100);
+
+// Scroll reveal
+gsap.utils.toArray('.sr').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 50 },
+    {
+      opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
+});
+
+// Scroll progress bar
+window.addEventListener('scroll', () => {
+  const prog = document.getElementById('scrollProgress');
+  const st = document.documentElement.scrollTop || document.body.scrollTop;
+  const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  prog.style.width = (st / sh * 100) + '%';
+});
+
+// Parallax hero orb
+gsap.to('.hero-orb', {
+  y: '30%',
+  ease: 'none',
+  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+});
+
+/* ─── WEB3FORMS CONTACT ─── */
+const form = document.getElementById('contactForm');
+const msg  = document.getElementById('formMessage');
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = form.querySelector('.form-submit');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (json.success) {
+      msg.className = 'form-message success';
+      msg.textContent = '✓ Message sent! I\'ll be in touch soon.';
+      form.reset();
+    } else {
+      throw new Error(json.message);
+    }
+  } catch (err) {
+    msg.className = 'form-message error';
+    msg.textContent = '✗ Something went wrong. Please email me directly at khamisgladys@gmail.com';
+  }
+  btn.textContent = 'Send Message →'; btn.disabled = false;
+});
+</script>
+</body>
+</html>
